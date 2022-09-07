@@ -19,10 +19,12 @@ public class FluxAndMonoGeneratorService {
     }
 
     public Flux<String> namesFlux() {
-        return Flux.fromIterable(List.of("Foo", "Bar", "Temp"));
+        return Flux.fromIterable(List.of("Foo", "Bar", "Temp"))
+                .log();// DB or remote service call
     }
 
     public Mono<String> nameMono() {
-        return Mono.just("Me");
+        return Mono.just("Me")
+                .log();
     }
 }
