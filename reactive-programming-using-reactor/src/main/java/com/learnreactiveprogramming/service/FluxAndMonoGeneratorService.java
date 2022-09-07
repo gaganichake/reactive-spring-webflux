@@ -22,6 +22,9 @@ public class FluxAndMonoGeneratorService {
 
         fluxAndMonoGeneratorService.namesFluxImmutable()
                 .subscribe(name -> System.out.println("Flux Immutable Name is " + name));
+
+        fluxAndMonoGeneratorService.namesFluxFilter(3)
+                .subscribe(name -> System.out.println("Flux  Name is " + name));
     }
 
     public Flux<String> namesFlux() {
@@ -45,5 +48,11 @@ public class FluxAndMonoGeneratorService {
         Flux<String> namesFlux = Flux.fromIterable(List.of("Foo", "Bar", "Temp"));
         namesFlux.map(String::toUpperCase);
         return namesFlux;
+    }
+
+    public Flux<String> namesFluxFilter(int nameLength) {
+        return Flux.fromIterable(List.of("Foo", "Bar", "Temp"))
+                .map(String::toUpperCase)
+                .filter(s -> s.length() > nameLength);
     }
 }

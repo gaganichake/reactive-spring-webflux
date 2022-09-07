@@ -49,4 +49,18 @@ class FluxAndMonoGeneratorServiceTest {
                 .expectNext("Foo", "Bar", "Temp")
                 .verifyComplete();
     }
+
+    @Test
+    void namesFluxFilter() {
+        //given
+        int nameLength = 3;
+
+        //when
+        Flux<String> namesFlux = fluxAndMonoGeneratorService.namesFluxFilter(nameLength);
+
+        //then
+        StepVerifier.create(namesFlux)
+                .expectNext("TEMP")
+                .verifyComplete();
+    }
 }
