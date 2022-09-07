@@ -55,4 +55,17 @@ public class FluxAndMonoGeneratorService {
                 .map(String::toUpperCase)
                 .filter(s -> s.length() > nameLength);
     }
+
+    public Flux<String> namesFluxTransformFlatMap() {
+        return Flux.fromIterable(List.of("Foo", "Bar", "Temp"))
+                .map(String::toUpperCase)
+//                .flatMap(s -> splitString(s))
+                .flatMap(this::splitString)
+                .log();
+    }
+
+    private Flux<String> splitString(String name) {
+        String[] split = name.split("");
+        return Flux.fromArray(split);
+    }
 }

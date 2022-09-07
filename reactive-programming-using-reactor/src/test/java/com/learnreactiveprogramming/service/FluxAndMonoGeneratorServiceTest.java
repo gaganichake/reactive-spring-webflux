@@ -63,4 +63,17 @@ class FluxAndMonoGeneratorServiceTest {
                 .expectNext("TEMP")
                 .verifyComplete();
     }
+
+    @Test
+    void namesFluxTransformFlatMap() {
+        //given
+
+        //when
+        Flux<String> namesFlux = fluxAndMonoGeneratorService.namesFluxTransformFlatMap();
+
+        //then
+        StepVerifier.create(namesFlux)
+                .expectNext("F", "O", "O", "B", "A", "R", "T", "E", "M", "P")
+                .verifyComplete();
+    }
 }
