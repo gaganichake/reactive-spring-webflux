@@ -161,4 +161,188 @@ class FluxAndMonoGeneratorServiceTest {
                 .expectNext("TEMP")
                 .verifyComplete();
     }
+
+    @Test
+    void namesFluxDefaultIfEmpty() {
+        //given
+        int nameLength = 5;
+
+        //when
+        Flux<String> namesFlux = fluxAndMonoGeneratorService.namesFluxDefaultIfEmpty(nameLength);
+
+        //then
+        StepVerifier.create(namesFlux)
+                .expectNext("-")
+                .verifyComplete();
+    }
+
+    @Test
+    void namesFluxSwitchIfEmpty() {
+        //given
+        int nameLength = 5;
+
+        //when
+        Flux<String> namesFlux = fluxAndMonoGeneratorService.namesFluxSwitchIfEmpty(nameLength);
+
+        //then
+        StepVerifier.create(namesFlux)
+                .expectNext("Zootopia", "Toofan", "Kooho")
+                .verifyComplete();
+    }
+
+    @Test
+    void concatFlux() {
+        //given
+
+        //when
+        Flux<String> letterFlux = fluxAndMonoGeneratorService.concatFlux();
+
+        //then
+        StepVerifier.create(letterFlux)
+                .expectNext("a", "b", "c", "d", "A", "B", "C", "D")
+                .verifyComplete();
+    }
+
+    @Test
+    void concatWithFlux() {
+        //given
+
+        //when
+        Flux<String> letterFlux = fluxAndMonoGeneratorService.concatWithFlux();
+
+        //then
+        StepVerifier.create(letterFlux)
+                .expectNext("a", "b", "c", "d", "A", "B", "C", "D")
+                .verifyComplete();
+    }
+
+    @Test
+    void concatWithMono() {
+        //given
+
+        //when
+        Flux<String> letterFlux = fluxAndMonoGeneratorService.concatWithMono();
+
+        //then
+        StepVerifier.create(letterFlux)
+                .expectNext("a", "A", "B", "C", "D")
+                .verifyComplete();
+    }
+
+    @Test
+    void mergeFlux() {
+        //given
+
+        //when
+        Flux<String> letterFlux = fluxAndMonoGeneratorService.mergeFlux();
+
+        //then
+        StepVerifier.create(letterFlux)
+                .expectNext("a", "A", "b", "B", "c", "d", "C", "D")
+                .verifyComplete();
+    }
+
+    @Test
+    void mergeWithFlux() {
+        //given
+
+        //when
+        Flux<String> letterFlux = fluxAndMonoGeneratorService.mergeWithFlux();
+
+        //then
+        StepVerifier.create(letterFlux)
+                .expectNext("a", "A", "b", "B", "c", "d", "C", "D")
+                .verifyComplete();
+    }
+
+    @Test
+    void mergeWithMono() {
+        //given
+
+        //when
+        Flux<String> letterFlux = fluxAndMonoGeneratorService.mergeWithMono();
+
+        //then
+        StepVerifier.create(letterFlux)
+                .expectNext("a", "A", "B", "C", "D")
+                .verifyComplete();
+    }
+
+    @Test
+    void mergeSequentialFlux() {
+        //given
+
+        //when
+        Flux<String> letterFlux = fluxAndMonoGeneratorService.mergeSequentialFlux();
+
+        //then
+        StepVerifier.create(letterFlux)
+                .expectNext("a", "b", "c", "d", "A", "B", "C", "D")
+                .verifyComplete();
+    }
+
+    @Test
+    void zipFlux() {
+        //given
+
+        //when
+        Flux<String> letterFlux = fluxAndMonoGeneratorService.zipFlux();
+
+        //then
+        StepVerifier.create(letterFlux)
+                .expectNext("aA", "bB", "cC", "dD")
+                .verifyComplete();
+    }
+
+    @Test
+    void zipFluxMap() {
+        //given
+
+        //when
+        Flux<String> letterFlux = fluxAndMonoGeneratorService.zipFluxMap();
+
+        //then
+        StepVerifier.create(letterFlux)
+                .expectNext("aA", "bB", "cC", "dD")
+                .verifyComplete();
+    }
+
+    @Test
+    void zipFluxTuple4Map() {
+        //given
+
+        //when
+        Flux<String> letterFlux = fluxAndMonoGeneratorService.zipFluxTuple4Map();
+
+        //then
+        StepVerifier.create(letterFlux)
+                .expectNext("aA1@", "bB2#", "cC3$", "dD4&")
+                .verifyComplete();
+    }
+
+    @Test
+    void zipWithFlux() {
+        //given
+
+        //when
+        Flux<String> letterFlux = fluxAndMonoGeneratorService.zipWithFlux();
+
+        //then
+        StepVerifier.create(letterFlux)
+                .expectNext("aA", "bB", "cC", "dD")
+                .verifyComplete();
+    }
+
+    @Test
+    void zipWithMono() {
+        //given
+
+        //when
+        Mono<String> letterFlux = fluxAndMonoGeneratorService.zipWithMono();
+
+        //then
+        StepVerifier.create(letterFlux)
+                .expectNext("aA")
+                .verifyComplete();
+    }
 }

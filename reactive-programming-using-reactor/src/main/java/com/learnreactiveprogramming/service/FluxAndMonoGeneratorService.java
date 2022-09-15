@@ -149,4 +149,177 @@ public class FluxAndMonoGeneratorService {
                 .transform(transform)
                 .log();
     }
+
+    // Return a default value if empty
+    public Flux<String> namesFluxDefaultIfEmpty(int nameLength) {
+
+        return Flux.fromIterable(List.of("Foo", "Bar", "Temp"))
+                .filter(s -> s.length() > nameLength)
+                .defaultIfEmpty("-")
+                .log();
+    }
+
+    // Switch to an alternative Publisher (Flux or Mono) if empty
+    public Flux<String> namesFluxSwitchIfEmpty(int nameLength) {
+
+        Flux<String> alternateSource = Flux.fromIterable(List.of("Zootopia", "Toofan", "Kooho"));
+
+        return Flux.fromIterable(List.of("Foo", "Bar", "Temp"))
+                .filter(s -> s.length() > nameLength)
+                .switchIfEmpty(alternateSource)
+                .log();
+    }
+
+    // concat & concatWith: Combine two reactive steams in to one
+    // Concatenation of Reactive Steams happens in a sequence (Synchronously)
+    // One publisher subscribes first and completes before second subscribes.
+    // Second publisher subscribed after first one and completes in sequence.
+
+    // Combine two Flux using static method "concat"
+    public Flux<String> concatFlux() {
+
+        Flux<String> lowerLetters = Flux.just("a", "b", "c", "d");
+
+        Flux<String> upperLetters = Flux.just("A", "B", "C", "D");
+
+        return Flux.concat(lowerLetters, upperLetters).log(); // You can combine more than two Flux
+    }
+
+    // Combine two Flux using instance method "concatWith"
+    public Flux<String> concatWithFlux() {
+
+        Flux<String> lowerLetters = Flux.just("a", "b", "c", "d");
+
+        Flux<String> upperLetters = Flux.just("A", "B", "C", "D");
+
+        return lowerLetters.concatWith(upperLetters).log(); // You can combine only two Flux
+    }
+
+    // Combine two Flux using instance method "concatWith"
+    public Flux<String> concatWithMono() {
+
+        Mono<String> lowerLetters = Mono.just("a");
+
+        Flux<String> upperLetters = Flux.just("A", "B", "C", "D");
+
+        return lowerLetters.concatWith(upperLetters).log(); // You can combine only two Flux
+    }
+
+    // merger & mergeWith: Combine two reactive steams in to one.
+    // Both the publishers are subscribed at the same time.
+    // Publishers are subscribed eagerly and the merge happens in an interleaved fashion
+
+    // Combine two Flux using static method "merge"
+    public Flux<String> mergeFlux() {
+
+        Flux<String> lowerLetters = Flux.just("a", "b", "c", "d")
+                .delayElements(Duration.ofMillis(100));
+
+        Flux<String> upperLetters = Flux.just("A", "B", "C", "D")
+                .delayElements(Duration.ofMillis(150));
+
+        return Flux.merge(lowerLetters, upperLetters).log(); // You can combine more than two Flux
+    }
+
+    // Combine two Flux using instance method "mergeWith"
+    public Flux<String> mergeWithFlux() {
+
+        Flux<String> lowerLetters = Flux.just("a", "b", "c", "d")
+                .delayElements(Duration.ofMillis(100));
+
+        Flux<String> upperLetters = Flux.just("A", "B", "C", "D")
+                .delayElements(Duration.ofMillis(150));
+
+        return lowerLetters.mergeWith(upperLetters).log(); // You can combine only two Flux
+    }
+
+    // Combine two Flux using instance method "mergeWith"
+    public Flux<String> mergeWithMono() {
+
+        Mono<String> lowerLetters = Mono.just("a")
+                .delayElement(Duration.ofMillis(100));
+
+        Flux<String> upperLetters = Flux.just("A", "B", "C", "D")
+                .delayElements(Duration.ofMillis(150));
+
+        return lowerLetters.mergeWith(upperLetters).log(); // You can combine only two Flux
+    }
+
+    // mergeSequential: Combine two reactive steams in to one.
+    // Both the publishers are subscribed at the same time.
+    // Publishers are subscribed eagerly however the merge happens in a sequence
+
+    // Combine two Flux using static method "mergeSequential"
+    public Flux<String> mergeSequentialFlux() {
+
+        Flux<String> lowerLetters = Flux.just("a", "b", "c", "d")
+                .delayElements(Duration.ofMillis(100));
+
+        Flux<String> upperLetters = Flux.just("A", "B", "C", "D")
+                .delayElements(Duration.ofMillis(150));
+
+        return Flux.mergeSequential(lowerLetters, upperLetters).log(); // You can combine more than two Flux
+    }
+
+    // Transform two Flux using static method "zip"
+    public Flux<String> zipFlux() {
+
+        Flux<String> lowerLetters = Flux.just("a", "b", "c", "d");
+
+        Flux<String> upperLetters = Flux.just("A", "B", "C", "D");
+
+        return Flux.zip(lowerLetters, upperLetters, (lower, upper) -> lower + upper)
+                .log(); // You can combine up to 8 Flux
+    }
+
+    // Transform two Flux using static method "zip"
+    public Flux<String> zipFluxMap() {
+
+        Flux<String> lowerLetters = Flux.just("a", "b", "c", "d");
+
+        Flux<String> upperLetters = Flux.just("A", "B", "C", "D");
+
+        return Flux.zip(lowerLetters, upperLetters)
+                .map(tuple2 -> tuple2.getT1() + tuple2.getT2())
+                .log(); // You can combine up to 8 Flux
+    }
+
+    // Transform four Flux using static method "zip"
+    public Flux<String> zipFluxTuple4Map() {
+
+        Flux<String> lowerLetters = Flux.just("a", "b", "c", "d");
+
+        Flux<String> upperLetters = Flux.just("A", "B", "C", "D");
+
+        Flux<String> numberLetters = Flux.just("1", "2", "3", "4");
+
+        Flux<String> specialLetters = Flux.just("@", "#", "$", "&");
+
+        return Flux.zip(lowerLetters, upperLetters, numberLetters, specialLetters)
+                .map(tuple4 -> tuple4.getT1() + tuple4.getT2() + tuple4.getT3() + tuple4.getT4())
+                .log(); // You can combine up to 8 Flux
+    }
+
+    // Transform two Flux using instance method "zipWith"
+    public Flux<String> zipWithFlux() {
+
+        Flux<String> lowerLetters = Flux.just("a", "b", "c", "d");
+
+        Flux<String> upperLetters = Flux.just("A", "B", "C", "D");
+
+        return lowerLetters.zipWith(upperLetters, (lower, upper) -> lower + upper)
+                .log();
+    }
+
+    // Transform two Mono using instance method "zipWith"
+    public Mono<String> zipWithMono() {
+
+        Mono<String> lowerLetters = Mono.just("a");
+
+        Mono<String> upperLetters = Mono.just("A");
+
+        return lowerLetters.zipWith(upperLetters)
+                .map(tuple2 -> tuple2.getT1() + tuple2.getT2())
+                .log();
+    }
 }
